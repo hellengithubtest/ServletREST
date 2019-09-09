@@ -1,10 +1,8 @@
 package com.servlet.app.service;
 
 import com.servlet.app.entity.Car;
-import com.servlet.app.entity.Person;
 import com.servlet.app.repository.CarRepository;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
 @Service

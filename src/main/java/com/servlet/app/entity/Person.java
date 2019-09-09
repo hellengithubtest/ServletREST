@@ -2,9 +2,11 @@ package com.servlet.app.entity;
 
 import lombok.Data;
 
-import javax.persistence.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.Past;
 import java.util.Date;
 
 @Data
@@ -14,9 +16,11 @@ public class Person {
     @Id
     @Column(name = "Person_Id", nullable = false)
     private Long id;
+
     @Column(name = "Person_Name", nullable = false)
     private String name;
 
+    @Past
     @Column(name = "Person_Birthdate", nullable = false)
     private Date birthdate;
 }
