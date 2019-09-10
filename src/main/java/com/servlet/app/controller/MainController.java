@@ -2,16 +2,19 @@ package com.servlet.app.controller;
 
 import com.servlet.app.entity.Car;
 import com.servlet.app.entity.Person;
-import com.servlet.app.entity.PersonWithCars;
+
 import com.servlet.app.entity.Statistics;
-import com.servlet.app.service.CarService;
-import com.servlet.app.service.PersonService;
+import com.servlet.app.services.CarService;
+import com.servlet.app.services.PersonService;
+import com.servlet.app.utils.Adulthood;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,12 +42,14 @@ public class MainController {
     }
 
 
-    @GetMapping(value = "/personwithcars/{id}")
+/*    @GetMapping(value = "/personwithcars/{id}")
     public ResponseEntity<PersonWithCars> getPerson(@PathVariable(value = "id") Long id) {
         PersonWithCars personWithCars = new PersonWithCars();
 
-        personWithCars.setCars(carService.findByOwnerId(id));
         Person person = personService.findOne(id);
+
+        person.getBirthdate();
+        personWithCars.setCars(carService.findByOwnerId(id));
 
         personWithCars.setId(person.getId());
         personWithCars.setName(person.getName());
@@ -55,18 +60,24 @@ public class MainController {
         } else {
             return ResponseEntity.ok(personWithCars);
         }
-    }
+    }*/
 
     @PostMapping(value = "/person", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Void> savePerson(@Validated @RequestBody Person person) {
+    public ResponseEntity<Void> savePerson(@Valid @RequestBody Person person, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new IllegalArgumentException("ошибка");
+        }
         personService.savePerson(person);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(value = "/car", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Void> saveCar(@RequestBody Car car) {
+    public ResponseEntity<Void> saveCar(@Valid @RequestBody Car car, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new IllegalArgumentException("ошибка");
+        }
         carService.saveCar(car);
         return ResponseEntity.ok().build();
     }

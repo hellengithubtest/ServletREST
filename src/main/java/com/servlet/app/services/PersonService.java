@@ -1,4 +1,4 @@
-package com.servlet.app.service;
+package com.servlet.app.services;
 
 import com.servlet.app.entity.Person;
 import com.servlet.app.repository.PersonRepository;
