@@ -3,6 +3,7 @@ package com.servlet.app.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data

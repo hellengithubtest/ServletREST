@@ -10,6 +10,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -58,7 +59,7 @@ public class MainController {
 
     @PostMapping(value = "/person", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Void> savePerson(@RequestBody Person person) {
+    public ResponseEntity<Void> savePerson(@Validated @RequestBody Person person) {
         personService.savePerson(person);
         return ResponseEntity.ok().build();
     }
