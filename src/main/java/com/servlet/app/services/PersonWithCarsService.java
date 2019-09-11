@@ -7,29 +7,23 @@ import com.servlet.app.repository.PersonRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
-@NoArgsConstructor
+@Service
 @AllArgsConstructor
 public class PersonWithCarsService {
 
-    @NonNull
+    @Autowired
     PersonService personService;
-    @NonNull
+    @Autowired
     CarService carService;
 
     public PersonWithCars getPersonWithCars(Long id) {
-        System.out.println("get Person with cars");
         PersonWithCars personWithCars = new PersonWithCars();
-        System.out.println("get Person with cars1");
         Person person = personService.findOne(id);
-        System.out.println("get Person with cars2");
-        System.out.println(person);
-
-        person.getBirthdate();
-        personWithCars.setCars(carService.findByOwnerId(id));
-
+        personWithCars.setCars(carService.findByOwner(id));
         personWithCars.setId(person.getId());
         personWithCars.setName(person.getName());
         personWithCars.setBirthdate(person.getBirthdate());

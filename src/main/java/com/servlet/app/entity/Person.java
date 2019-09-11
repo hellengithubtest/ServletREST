@@ -4,15 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -23,17 +20,17 @@ import java.util.Date;
 @Entity
 public class Person implements Serializable {
     @Id
-    @NotNull
+    @PositiveOrZero(message = "Id - must be positive or zero")
     @Column(name = "Person_Id", nullable = false)
     private Long id;
 
-    @NotNull
+    @NotBlank(message = "Name - must be not blank")
     @Column(name = "Person_Name", nullable = false)
     private String name;
 
-    @Past
+    @Past(message = "Birthdate - must be in past")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
-    @DateTimeFormat(pattern = "dd.MM.yyyy")
+    //@DateTimeFormat(pattern = "dd.MM.yyyy")
     @Column(name = "Person_Birthdate", nullable = false)
     private Date birthdate;
 }

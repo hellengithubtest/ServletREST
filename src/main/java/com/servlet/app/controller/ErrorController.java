@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 
@@ -17,11 +16,17 @@ public class ErrorController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = IllegalArgumentException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    protected ResponseEntity<Object> handleNotFound(final RuntimeException ex, final WebRequest request) {
-        String bodyOfResponse = "not found";
+    protected ResponseEntity<?> handleNotFound(final RuntimeException ex) {
+        //System.out.println(ex.getMessage());
+        /*List<FieldError> errors = result.getFieldErrors();*/
+/*        List<String> message = new ArrayList<>();
+        for (FieldError e : errors) {
+         message.add("Field " + e.getField().toUpperCase() + " - " + e.getDefaultMessage());
+         }*/
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        return handleExceptionInternal(ex, bodyOfResponse, httpHeaders, HttpStatus.BAD_REQUEST, request);
+
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }

@@ -14,6 +14,6 @@ public class AdulthoodConstraintValidator implements ConstraintValidator<Adultho
         Calendar today = Calendar.getInstance();
         Calendar birthdate = Calendar.getInstance();
         birthdate.setTime(date);
-        return  (today.get(Calendar.YEAR) - birthdate.get(Calendar.YEAR))>18 ? true : false;
+        return (today.get(Calendar.YEAR) - birthdate.get(Calendar.YEAR)) > 18;
     }
 }

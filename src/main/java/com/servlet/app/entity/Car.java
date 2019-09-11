@@ -25,13 +25,13 @@ public class Car implements Serializable {
     @Column(name = "Car_Model", length = 30, nullable = false)
     private String model;
 
-    @NotNull
-    @Positive
+    @NotNull(message = "Horsepower -")
+    @Positive(message = "Horsepower - must be positive")
     @Column(name = "Car_Horsepower", nullable = false)
     private Integer horsepower;
 
     @NotNull
-    @Adulthood
-    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
-    private Long ownerId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "Car_Ownerid", nullable = false)
+    private Person person;
 }

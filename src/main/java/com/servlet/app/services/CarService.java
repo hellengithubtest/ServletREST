@@ -30,7 +30,7 @@ public class CarService {
         carRepository.deleteAll();
     }
 
-    public Car [] findByOwnerId(Long ownerId) {
-        return carRepository.findByOwnerId(ownerId);
+    public Car [] findByOwner(Long owner) {
+        return carRepository.findByOwner(owner);
     }
 }

@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target(value= ElementType.FIELD)
 @Retention(value= RetentionPolicy.RUNTIME)
 public @interface Adulthood {
-    String message() default "some message";
+    String message() default "18 +";
 
     Class<?>[] groups() default {};
 
