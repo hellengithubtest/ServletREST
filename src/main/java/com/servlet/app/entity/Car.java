@@ -1,9 +1,10 @@
 package com.servlet.app.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.servlet.app.utils.Adulthood;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,13 +14,14 @@ import java.io.Serializable;
 @Entity
 @Table(name = "car")
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class Car implements Serializable {
     @Id
     @Column(name = "Car_Id", nullable = false)
     private Long id;
 
-    @NonNull
+    @NotNull
     @Column(name = "Car_Model", length = 30, nullable = false)
     private String model;
 
@@ -28,9 +30,8 @@ public class Car implements Serializable {
     @Column(name = "Car_Horsepower", nullable = false)
     private Integer horsepower;
 
-    @NonNull
+    @NotNull
     @Adulthood
-    @JoinColumn(name = "ownerId", referencedColumnName = "Person_Id", nullable = false)
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Person ownerId;
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
+    private Long ownerId;
 }

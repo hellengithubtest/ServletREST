@@ -5,6 +5,8 @@ import com.servlet.app.repository.PersonRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 @AllArgsConstructor
 public class PersonService {
@@ -16,6 +18,7 @@ public class PersonService {
         return personRepository.count();
     }
 
+    @Transactional
     public void savePerson(Person person) {
         personRepository.save(person);
     }

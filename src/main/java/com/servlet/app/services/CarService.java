@@ -5,6 +5,8 @@ import com.servlet.app.repository.CarRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 @AllArgsConstructor
 public class CarService {
@@ -19,6 +21,7 @@ public class CarService {
         return carRepository.countByUniqueName();
     }
 
+    @Transactional
     public void  saveCar(Car car) {
         carRepository.save(car);
     }
