@@ -1,24 +1,31 @@
 package com.servlet.app.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.servlet.app.entity.Car;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 
-
+@Data
+@Component
+@AllArgsConstructor
+@NoArgsConstructor
 public class CarDto implements Serializable {
+    @NotNull
+    @PositiveOrZero
     private Long id;
 
-    @NotBlank(message = "Model - is not blank")
+    @NotBlank
     private String model;
 
-    @NotNull(message = "Horsepower -")
-    @Positive(message = "Horsepower - must be positive")
+    @NotNull
+    @Positive
     private Integer horsepower;
 
     @NotNull
@@ -26,11 +33,4 @@ public class CarDto implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Long owner;
 
-/*    public Car _toConvertCarEntity() {
-        Car car = new Car();
-        car.setId(id);
-        car.setModel(model);
-        car.setHorsepower(horsepower);
-        car.setOwner();
-    }*/
 }

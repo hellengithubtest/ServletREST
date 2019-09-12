@@ -2,15 +2,16 @@ package com.servlet.app.services;
 
 import com.servlet.app.entity.Person;
 import com.servlet.app.repository.PersonRepository;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 
 @Service
-@AllArgsConstructor
 public class PersonService {
-
+    @Autowired
     PersonRepository personRepository;
 
 
@@ -18,16 +19,20 @@ public class PersonService {
         return personRepository.count();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void savePerson(Person person) {
+        personRepository.findById(person.getId()).ifPresent(e -> {
+            throw new EntityExistsException("The person is exit");
+        });
         personRepository.save(person);
     }
 
     public void clearPerson() {
         personRepository.deleteAll();
     }
-
-    public Person findOne(Long personId) {
-        return personRepository.findOne(personId);
+    @Transactional(rollbackFor = Exception.class)
+    public Person findById(Long personId) {
+        return personRepository.findById(personId).orElseThrow(() ->
+            new EntityNotFoundException("Not found Person with this Id"));
     }
 }

@@ -22,7 +22,7 @@ public class PersonWithCarsService {
 
     public PersonWithCars getPersonWithCars(Long id) {
         PersonWithCars personWithCars = new PersonWithCars();
-        Person person = personService.findOne(id);
+        Person person = personService.findById(id);
         personWithCars.setCars(carService.findByOwner(id));
         personWithCars.setId(person.getId());
         personWithCars.setName(person.getName());

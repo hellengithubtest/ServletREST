@@ -25,13 +25,16 @@ public class Car implements Serializable {
     @Column(name = "Car_Model", length = 30, nullable = false)
     private String model;
 
-    @NotNull(message = "Horsepower -")
-    @Positive(message = "Horsepower - must be positive")
+    @NotNull
+    @Positive
     @Column(name = "Car_Horsepower", nullable = false)
     private Integer horsepower;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "Car_Ownerid", nullable = false)
-    private Person person;
+    @Adulthood(message = "somemessage")
+    @Column(name = "Car_Ownerid", nullable = false)
+    private Person owner;
+
+
+
 }

@@ -1,12 +1,11 @@
 package com.servlet.app.controller;
 
-
 import com.servlet.app.dto.CarDto;
 import com.servlet.app.services.CarService;
+import com.servlet.app.services.PersonService;
 import com.servlet.app.utils.CarMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +24,15 @@ public class CarController {
     private CarService carService;
     @NonNull
     private CarMapper carMapper;
+    @NonNull
+    private PersonService personService;
+
 
 
     @GetMapping(value = "/clear")
     public ResponseEntity<Void> getClear() {
         carService.clearCar();
+        personService.clearPerson();
         return ResponseEntity.ok().build();
     }
 
@@ -47,7 +50,8 @@ public class CarController {
             return new ResponseEntity<String>(message.toString(), HttpStatus.BAD_REQUEST);
 
         } else {
-
+            System.out.println(carDto);
+            System.out.println(carMapper.dtoToEntity(carDto));
             carService.saveCar(carMapper.dtoToEntity(carDto));
             return new ResponseEntity<String>("The Car is successfully saved", HttpStatus.OK);
         }
