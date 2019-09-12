@@ -1,16 +1,18 @@
 package com.servlet.app.controller;
 
 import com.servlet.app.entity.Person;
-import com.servlet.app.entity.PersonWithCars;
+import com.servlet.app.dto.PersonWithCars;
 import com.servlet.app.services.PersonService;
 import com.servlet.app.services.PersonWithCarsService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Parameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,12 +23,12 @@ public class PersonController {
     @NonNull
     private PersonWithCarsService personWithCarsService;
 
-    @GetMapping(value = "/personwithcars/{id}")
-    public ResponseEntity<PersonWithCars> getPerson(@Valid @PathVariable(value = "id") Long id) {
-        if (personWithCarsService.getPersonWithCars(id) == null) {
+    @GetMapping(value = "/personwithcars")
+    public ResponseEntity<PersonWithCars> getPerson(@Valid @RequestParam(value = "personid") Long personid) {
+        if (personWithCarsService.getPersonWithCars(personid) == null) {
             return ResponseEntity.notFound().build();
         } else {
-            return ResponseEntity.ok(personWithCarsService.getPersonWithCars(id));
+            return ResponseEntity.ok(personWithCarsService.getPersonWithCars(personid));
         }
     }
 

@@ -1,6 +1,6 @@
 package com.servlet.app.services;
 
-import com.servlet.app.entity.Statistics;
+import com.servlet.app.dto.Statistics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

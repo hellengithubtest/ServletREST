@@ -3,7 +3,7 @@ package com.servlet.app.controller;
 import com.servlet.app.dto.CarDto;
 import com.servlet.app.services.CarService;
 import com.servlet.app.services.PersonService;
-import com.servlet.app.utils.CarMapper;
+import com.servlet.app.mapper.CarMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

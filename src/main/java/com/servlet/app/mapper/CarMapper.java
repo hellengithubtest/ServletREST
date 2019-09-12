@@ -1,4 +1,4 @@
-package com.servlet.app.utils;
+package com.servlet.app.mapper;
 
 import com.servlet.app.dto.CarDto;
 import com.servlet.app.entity.Car;

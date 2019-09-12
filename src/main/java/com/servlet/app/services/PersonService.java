@@ -35,7 +35,7 @@ public class PersonService {
         personRepository.deleteAll();
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     public Person findById(Long personId) {
         return personRepository.findById(personId).orElseThrow(() ->
             new EntityNotFoundException("Not found Person with this Id"));

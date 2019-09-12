@@ -1,21 +1,16 @@
 package com.servlet.app.services;
 
 import com.servlet.app.dto.CarDto;
-import com.servlet.app.entity.Car;
 import com.servlet.app.entity.Person;
-import com.servlet.app.entity.PersonWithCars;
-import com.servlet.app.repository.CarRepository;
-import com.servlet.app.repository.PersonRepository;
+import com.servlet.app.dto.PersonWithCars;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 

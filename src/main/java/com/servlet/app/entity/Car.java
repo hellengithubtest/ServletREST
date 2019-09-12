@@ -18,21 +18,20 @@ import java.io.Serializable;
 @Data
 public class Car implements Serializable {
     @Id
-    @Column(name = "Car_Id", nullable = false)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     @NotNull
-    @Column(name = "Car_Model", length = 30, nullable = false)
+    @Column(name = "model", length = 30, nullable = false)
     private String model;
 
     @NotNull
     @Positive
-    @Column(name = "Car_Horsepower", nullable = false)
+    @Column(name = "horsepower", nullable = false)
     private Integer horsepower;
 
-    @NotNull
     @Adulthood
-    @JoinColumn(name = "Car_Ownerid", nullable = false)
+    @JoinColumn(name = "Owner_id", nullable = false)
     @ManyToOne(cascade = CascadeType.ALL)
     private Person owner;
 

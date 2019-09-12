@@ -47,7 +47,7 @@ public class CarService {
         carRepository.deleteAll();
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     public List<Car> findByOwner(Person owner) {
         return carRepository.findByOwner(owner);
     }
