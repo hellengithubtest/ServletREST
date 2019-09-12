@@ -9,34 +9,18 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.RollbackException;
+import javax.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class ErrorController extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = IllegalArgumentException.class)
+    @ExceptionHandler(value = {IllegalArgumentException.class,
+            EntityExistsException.class,
+            EntityNotFoundException.class,
+            ConstraintViolationException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     protected ResponseEntity<?> handleNotFound(final RuntimeException ex) {
-/*        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);*/
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
-    @ExceptionHandler(value = EntityExistsException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    protected ResponseEntity<?> entityExist(final RuntimeException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
-    }
-
-    @ExceptionHandler(value = EntityNotFoundException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    protected ResponseEntity<?> entityNotFound(final RuntimeException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
-    }
-
-/*    @ExceptionHandler(value = RollbackException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    protected ResponseEntity<?> rollbackFound(final RuntimeException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
-    }*/
 }

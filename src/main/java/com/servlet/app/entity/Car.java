@@ -31,8 +31,9 @@ public class Car implements Serializable {
     private Integer horsepower;
 
     @NotNull
-    @Adulthood(message = "somemessage")
-    @Column(name = "Car_Ownerid", nullable = false)
+    @Adulthood
+    @JoinColumn(name = "Car_Ownerid", nullable = false)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Person owner;
 
 

@@ -1,6 +1,8 @@
 package com.servlet.app.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,15 +20,15 @@ import java.util.Date;
 @Entity
 public class Person implements Serializable {
     @Id
-    @PositiveOrZero(message = "Id - must be positive or zero")
+    @PositiveOrZero
     @Column(name = "Person_Id", nullable = false, unique = true)
     private Long id;
 
-    @NotBlank(message = "Name - must be not blank")
+    @NotBlank
     @Column(name = "Person_Name", nullable = false)
     private String name;
 
-    @Past(message = "Birthdate - must be in past")
+    @Past
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     //@DateTimeFormat(pattern = "dd.MM.yyyy")
     @Column(name = "Person_Birthdate", nullable = false)

@@ -23,12 +23,10 @@ public class PersonController {
 
     @GetMapping(value = "/personwithcars/{id}")
     public ResponseEntity<PersonWithCars> getPerson(@Valid @PathVariable(value = "id") Long id) {
-        PersonWithCars personWithCars = personWithCarsService.getPersonWithCars(id);
-
-        if (personWithCars == null) {
+        if (personWithCarsService.getPersonWithCars(id) == null) {
             return ResponseEntity.notFound().build();
         } else {
-            return ResponseEntity.ok(personWithCars);
+            return ResponseEntity.ok(personWithCarsService.getPersonWithCars(id));
         }
     }
 
