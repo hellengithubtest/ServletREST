@@ -17,6 +17,16 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Data
 public class Car implements Serializable {
+
+    public Car(Long id, @NotNull String model,
+               @NotNull @Positive Integer horsepower,
+               @NotNull Person owner) {
+        this.id = id;
+        this.model = model;
+        this.horsepower = horsepower;
+        this.owner = owner;
+    }
+    @NotNull
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
@@ -31,10 +41,12 @@ public class Car implements Serializable {
     private Integer horsepower;
 
     @Adulthood
-    @JoinColumn(name = "Owner_id", nullable = false)
+    @NotNull
+    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     @ManyToOne(cascade = CascadeType.ALL)
     private Person owner;
 
-
+    @Column(name = "owner_id", insertable = false, updatable = false)
+    private Long ownerId;
 
 }

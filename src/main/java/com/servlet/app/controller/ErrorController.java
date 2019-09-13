@@ -16,11 +16,16 @@ public class ErrorController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {IllegalArgumentException.class,
             EntityExistsException.class,
-            EntityNotFoundException.class,
             ConstraintViolationException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    protected ResponseEntity<?> handleNotFound(final RuntimeException ex) {
+    protected ResponseEntity<?> handleIllegalArgument(final RuntimeException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    @ExceptionHandler(value = EntityNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    protected ResponseEntity<?> handleNotFound(final RuntimeException ex) {
+        return ResponseEntity.notFound().build();
     }
 
 }

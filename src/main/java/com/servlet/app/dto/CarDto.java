@@ -6,10 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 
 @Data
@@ -18,10 +15,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class CarDto implements Serializable {
     @NotNull
-    @PositiveOrZero
     private Long id;
 
-    @NotBlank
+    @NotNull
+    @Pattern(regexp = "^(\\w+)([\\\\-])([a-zA-Z0-9\\\\-]+)$", message = "Format vendor-model")
     private String model;
 
     @NotNull
@@ -29,8 +26,6 @@ public class CarDto implements Serializable {
     private Integer horsepower;
 
     @NotNull
-    @Positive
-    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
-    private Long owner;
+    private Long ownerId;
 
 }

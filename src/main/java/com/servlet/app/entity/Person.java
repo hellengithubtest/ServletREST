@@ -1,21 +1,16 @@
 package com.servlet.app.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.servlet.app.utils.LocalDateConverter;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-import org.hibernate.validator.constraints.UniqueElements;
-import org.springframework.data.jpa.convert.threetenbp.ThreeTenBackPortJpaConverters;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 
-import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Table(name = "person", uniqueConstraints = {@UniqueConstraint(columnNames = "id")})
@@ -23,18 +18,22 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity
 public class Person implements Serializable {
+    @NotNull
     @Id
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
-    @NotBlank
+    @NotNull
     @Column(name = "name", nullable = false)
     private String name;
 
     @Past
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     //@DateTimeFormat(pattern = "dd.MM.yyyy")
-    @Convert(converter = LocalDateConverter.class)
     @Column(name = "birthdate", nullable = false)
     private LocalDate birthdate;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "owner")
+    private List<Car> cars;
 }

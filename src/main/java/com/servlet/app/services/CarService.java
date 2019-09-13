@@ -2,40 +2,40 @@ package com.servlet.app.services;
 
 import com.servlet.app.entity.Car;
 import com.servlet.app.entity.Person;
+import com.servlet.app.services.PersonService;
 import com.servlet.app.repository.CarRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.EntityExistsException;
+import org.springframework.transaction.annotation.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 
 @Validated
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class CarService {
-    @Autowired
+    @NonNull
     CarRepository carRepository;
-    @Autowired
+    @NonNull
     PersonService personService;
 
-    @Transactional(rollbackFor = Exception.class)
     public Long countCar() {
         return carRepository.count();
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public Long countModelDistinct() {
         return carRepository.countByUniqueName();
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void saveCar(@Valid  Car car) {
+    public void saveCar(@Valid Car car) {
         carRepository.findById(car.getId()).ifPresent(e -> {
             throw new EntityExistsException("The car is exit");
         });
@@ -47,8 +47,7 @@ public class CarService {
         carRepository.deleteAll();
     }
 
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public List<Car> findByOwner(Person owner) {
-        return carRepository.findByOwner(owner);
+    public List<Car> findByOwner(Long owner) {
+        return carRepository.findByOwnerId(owner);
     }
 }
