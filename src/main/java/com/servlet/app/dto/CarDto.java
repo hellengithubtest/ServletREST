@@ -10,7 +10,6 @@ import javax.validation.constraints.*;
 import java.io.Serializable;
 
 @Data
-@Component
 @AllArgsConstructor
 @NoArgsConstructor
 public class CarDto implements Serializable {

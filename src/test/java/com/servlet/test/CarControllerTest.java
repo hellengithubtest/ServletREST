@@ -50,9 +50,10 @@ public class CarControllerTest extends AbstractTest{
     public void getCreateCar() throws Exception {
         String uri = "/car";
         Person person = new Person();
-        person.setId(Long.valueOf(100));
+        person.setId(100L);
         person.setName("ValidPerson");
         person.setBirthdate(LocalDate.of(1992,10,10));
+        person.setCars(null);
         String inputJson1 = super.mapToJson(person);
         System.out.println("Json" + inputJson1);
         MvcResult mvcResult1 = mvc.perform(MockMvcRequestBuilders.post(uri)
