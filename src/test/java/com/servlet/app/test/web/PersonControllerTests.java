@@ -1,17 +1,10 @@
 package com.servlet.app.test.web;
 
-import com.servlet.app.dto.PersonWithCars;
-import com.servlet.app.entity.Car;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.time.LocalDate;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 public class PersonControllerTests extends AbstractTest{
     @Override
@@ -21,105 +14,145 @@ public class PersonControllerTests extends AbstractTest{
     }
 
     String uriPerson = "/person";
-    String uriCar = "/car";
-    @Test
-    public void createValidPerson() throws Exception{
-        String inputJson = "{\"id\":101,\"name\":\"ValidPerson\",\"birthdate\":\"11.11.1992\",\"cars\":null}";
-        MvcResult mvcResult1 = mvc.perform(MockMvcRequestBuilders.post(uriPerson)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(inputJson)).andReturn();
+    String uriPersonWithCar = "/personwithcars?personid=";
 
-        String content = mvcResult1.getResponse().getContentAsString();
-        assertEquals(200, mvcResult1.getResponse().getStatus());
+    @Test
+    public void addValidPerson() throws Exception{
+        String inputJson = "{\"id\":\"-10\",\"name\":\"Validperson1\",\"birthdate\":\"01.01.2000\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson)).andExpect(MockMvcResultMatchers.status().isOk());
+
+        mvc.perform(MockMvcRequestBuilders.get(uriPersonWithCar + (-10))
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    public void createPersonWithoutBirthdate() throws Exception{
+    public void createValidPersonLessThen18() throws Exception{
+        String inputJson = "{\"id\":\"-20\",\"name\":\"Validperson2\",\"birthdate\":\"01.12.2017\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson)).andExpect(MockMvcResultMatchers.status().isOk());
+
+        mvc.perform(MockMvcRequestBuilders.get(uriPersonWithCar + (-20))
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void createPersonWithEmptyName() throws Exception{
+        String inputJson = "{\"id\":\"-30\",\"name\":\"\",\"birthdate\":\"01.12.2017\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson)).andExpect(MockMvcResultMatchers.status().isOk());
+
+        mvc.perform(MockMvcRequestBuilders.get(uriPersonWithCar + (-30))
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void createBadPersonWithFutureBirthdate() throws Exception{
+        String inputJson = "{\"id\":\"-39\",\"name\":\"valid\",\"birthdate\":\"01.12.2117\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson)).andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void createBadPersonWithEmptyId() throws Exception{
+        String inputJson = "{\"id\":\"\",\"name\":\"valid\",\"birthdate\":\"01.12.2017\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson)).andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void createBadPersonWithNullId() throws Exception{
+        String inputJson = "{\"name\":\"valid\",\"birthdate\":\"01.12.2017\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson)).andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void createBadPersonWithNullName() throws Exception{
+        String inputJson = "{\"id\":\"-70\",\"birthdate\":\"01.12.2017\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson)).andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        mvc.perform(MockMvcRequestBuilders.get(uriPersonWithCar + (-70))
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    public void createBadPersonWithNullBirthdate() throws Exception{
         String inputJson = "{\"id\":\"-80\",\"name\":\"valid\"}";
-        MvcResult mvcResult1 = mvc.perform(MockMvcRequestBuilders.post(uriPerson)
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(inputJson)).andReturn();
+                .content(inputJson)).andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        assertEquals(400, mvcResult1.getResponse().getStatus());
-        assertEquals(mvcResult1.getResponse().getContentAsString(), "must not be null");
+        mvc.perform(MockMvcRequestBuilders.get(uriPersonWithCar + (-80))
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    public void createPersonWithoutName() throws Exception{
-        String inputJson = "{\"id\":\"-1\",\"birthdate\":\"01.01.2000\"}";
-        MvcResult mvcResult1 = mvc.perform(MockMvcRequestBuilders.post(uriPerson)
+    public void createBadPersonWithIncorrectBirthdate() throws Exception{
+        String inputJson = "{\"id\":\"-90\",\"name\":\"Validperson2\",\"birthdate\":\"2017-01-01\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(inputJson)).andReturn();
+                .content(inputJson)).andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        assertEquals(400, mvcResult1.getResponse().getStatus());
-        assertEquals(mvcResult1.getResponse().getContentAsString(), "must not be null");
+        mvc.perform(MockMvcRequestBuilders.get(uriPersonWithCar + (-90))
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+
+    @Test
+    public void createBadPersonLanientBirthdate() throws Exception{
+        String inputJson = "{\"id\":\"-100\",\"name\":\"Validperson2\",\"birthdate\":\"01.15.2017\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson)).andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        mvc.perform(MockMvcRequestBuilders.get(uriPersonWithCar + (-100))
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    public void createPersonWithoutId() throws Exception{
-        String inputJson = "{\"name\":\"ValidPerson\",\"birthdate\":\"11.11.1992\"}";
-        MvcResult mvcResult1 = mvc.perform(MockMvcRequestBuilders.post(uriPerson)
+    public void createBadPersonWithSymbolsBirthdaate() throws Exception{
+        String inputJson = "{\"id\":\"-110\",\"name\":\"Validperson2\",\"birthdate\":\"sds\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(inputJson)).andReturn();
+                .content(inputJson)).andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        assertEquals(400, mvcResult1.getResponse().getStatus());
-        assertEquals(mvcResult1.getResponse().getContentAsString(), "must not be null");
+        mvc.perform(MockMvcRequestBuilders.get(uriPersonWithCar + (-110))
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    public void createPersonWithNegativeId() throws Exception{
-        String inputJson = "{\"id\":-101,\"name\":\"ValidPerson\",\"birthdate\":\"11.11.1992\",\"cars\":null}";
-        MvcResult mvcResult1 = mvc.perform(MockMvcRequestBuilders.post(uriPerson)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(inputJson)).andReturn();
+    public void getBadPersonWithEmptyNullNoformatId() throws Exception{
+        mvc.perform(MockMvcRequestBuilders.get(uriPersonWithCar)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        assertEquals(200, mvcResult1.getResponse().getStatus());
+        mvc.perform(MockMvcRequestBuilders.get(uriPersonWithCar + null)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        mvc.perform(MockMvcRequestBuilders.get(uriPersonWithCar + "asdsad")
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(MockMvcResultMatchers.status().isBadRequest());
+
     }
 
     @Test
-    public void createPersonChild() throws Exception{
-        String inputJson = "{\"id\":101,\"name\":\"ValidPerson\",\"birthdate\":\"11.11.2005\",\"cars\":null}";
-        MvcResult mvcResult1 = mvc.perform(MockMvcRequestBuilders.post(uriPerson)
+    public void getBadPersonUnique() throws Exception{
+        String inputJson1 = "{\"id\":\"-250\",\"name\":\"Validperson1\",\"birthdate\":\"01.01.2000\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(inputJson)).andReturn();
+                .content(inputJson1)).andExpect(MockMvcResultMatchers.status().isOk());
 
-        assertEquals(200, mvcResult1.getResponse().getStatus());
-    }
-
-    @Test
-    public void getPersonWithCars() throws Exception{
-        String uriPersonWithCar = "/personwithcars?personid=101";
-
-        String inputJson = "{\"id\":101,\"name\":\"ValidPerson\",\"birthdate\":\"11.11.1992\",\"cars\":null}";
-        MvcResult mvcResultPerson = mvc.perform(MockMvcRequestBuilders.post(uriPerson)
+        String inputJson2 = "{\"id\":\"-250\",\"name\":\"Validperson1\",\"birthdate\":\"01.01.2000\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(inputJson)).andReturn();
-
-        assertEquals(200, mvcResultPerson.getResponse().getStatus());
-
-        String firstCar = "{\"id\":\"-229\",\"model\":\"BMW-X3\",\"horsepower\":100,\"ownerId\":\"101\"}";
-        MvcResult mvcResult2 = mvc.perform(MockMvcRequestBuilders.post(uriCar)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(firstCar)).andReturn();
-        assertEquals(200, mvcResult2.getResponse().getStatus());
-
-        String secondCar = "{\"id\":\"-228\",\"model\":\"Lada-Devyatka\",\"horsepower\":50,\"ownerId\":\"101\"}";
-        MvcResult mvcResult3 = mvc.perform(MockMvcRequestBuilders.post(uriCar)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(secondCar)).andReturn();
-        assertEquals(200, mvcResult3.getResponse().getStatus());
-
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uriPersonWithCar)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-
-        String content = mvcResult.getResponse().getContentAsString();
-        PersonWithCars personWithCars = super.mapFromJson(content, PersonWithCars.class);
-        System.out.println(personWithCars);
-
-        assertEquals(200, mvcResult.getResponse().getStatus());
-        assertEquals("BMW-X3", personWithCars.getCars()[0].getModel());
-        assertEquals("Lada-Devyatka", personWithCars.getCars()[1].getModel());
-
+                .content(inputJson2)).andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
 }

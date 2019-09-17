@@ -1,13 +1,14 @@
 package com.servlet.app.test.web;
 
-import com.servlet.app.dto.Statistics;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 public class StatisticsControllerTests extends AbstractTest{
     @Override
@@ -22,54 +23,157 @@ public class StatisticsControllerTests extends AbstractTest{
 
     @Test
     public void getStatistics() throws Exception {
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uriStat)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        mvc.perform(MockMvcRequestBuilders.get(uriStat)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(MockMvcResultMatchers.status().isOk());
 
-        assertEquals(200, mvcResult.getResponse().getStatus());
+        mvc.perform(
+                MockMvcRequestBuilders.get(uriStat))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.personcount", is(0)))
+                .andExpect(jsonPath("$.carcount", is(0)))
+                .andExpect(jsonPath("$.uniquevendorcount", is(0)))
+                .andDo(MockMvcResultHandlers.print());
+
+        String inputJsonPerson = "{\"id\":\"-230\",\"name\":\"Validperson1\",\"birthdate\":\"01.01.2000\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJsonPerson)).andExpect(MockMvcResultMatchers.status().isOk());
+
+        String inputJson1 = "{\"id\":\"-230\",\"model\":\"BMW-X5\",\"horsepower\":100,\"ownerId\":\"-230\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriCar)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson1)).andExpect(MockMvcResultMatchers.status().isOk());
+
+        String inputJson2 = "{\"id\":\"-229\",\"model\":\"BMW-X3\",\"horsepower\":100,\"ownerId\":\"-230\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriCar)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson2)).andExpect(MockMvcResultMatchers.status().isOk());
+
+        String inputJson3 = "{\"id\":\"-228\",\"model\":\"Lada-Devyatka\",\"horsepower\":50,\"ownerId\":\"-230\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriCar)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson3)).andExpect(MockMvcResultMatchers.status().isOk());
+
+        String inputJson4 = "{\"id\":\"-227\",\"model\":\"La-da-Devyatka\",\"horsepower\":50,\"ownerId\":\"-230\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriCar)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson4)).andExpect(MockMvcResultMatchers.status().isOk());
+
+        String inputJson5 = "{\"id\":\"-226\",\"model\":\"La-da-\",\"horsepower\":50,\"ownerId\":\"-230\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriCar)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson5)).andExpect(MockMvcResultMatchers.status().isOk());
+
+        mvc.perform(
+                MockMvcRequestBuilders.get(uriStat))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.uniquevendorcount", is(3)))
+                .andExpect(jsonPath("$.personcount", is(1)))
+                .andExpect(jsonPath("$.carcount", is(5)))
+                .andDo(MockMvcResultHandlers.print());
+
+
     }
 
     @Test
-    public void getCorrectStatistics() throws Exception {
-        //create one person
-        Statistics expectedStatistics = new Statistics(1L, 4L, 3L);
-        String firstPerson = "{\"id\":\"-230\",\"name\":\"Validperson1\",\"birthdate\":\"01.01.2000\"}";
+    public void getStatistics2NotAdd() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get(uriStat)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(MockMvcResultMatchers.status().isOk());
 
-        MvcResult mvcResultPerson = mvc.perform(MockMvcRequestBuilders.post(uriPerson)
+        mvc.perform(
+                MockMvcRequestBuilders.get(uriStat))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.personcount", is(0)))
+                .andExpect(jsonPath("$.carcount", is(0)))
+                .andExpect(jsonPath("$.uniquevendorcount", is(0)))
+                .andDo(MockMvcResultHandlers.print());
+
+        String inputJsonPerson1 = "{\"id\":\"-240\",\"name\":\"Validperson1\",\"birthdate\":\"01.01.2000\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(firstPerson)).andReturn();
-        assertEquals(200, mvcResultPerson.getResponse().getStatus());
+                .content(inputJsonPerson1)).andExpect(MockMvcResultMatchers.status().isOk());
 
-        //create 5 cars
-        String firstCar = "{\"id\":\"-229\",\"model\":\"BMW-X3\",\"horsepower\":100,\"ownerId\":\"-230\"}";
-        MvcResult mvcResult2 = mvc.perform(MockMvcRequestBuilders.post(uriCar)
+        String inputJsonPerson2 = "{\"id\":\"-239\",\"birthdate\":\"01.12.2017\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(firstCar)).andReturn();
-        assertEquals(200, mvcResult2.getResponse().getStatus());
+                .content(inputJsonPerson2)).andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        String secondCar = "{\"id\":\"-228\",\"model\":\"Lada-Devyatka\",\"horsepower\":50,\"ownerId\":\"-230\"}";
-        MvcResult mvcResult3 = mvc.perform(MockMvcRequestBuilders.post(uriCar)
+        String inputJson1 = "{\"id\":\"-240\",\"model\":\"BMW-X5\",\"horsepower\":100,\"ownerId\":\"-240\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriCar)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(secondCar)).andReturn();
-        assertEquals(200, mvcResult3.getResponse().getStatus());
+                .content(inputJson1)).andExpect(MockMvcResultMatchers.status().isOk());
 
-        String thirdCar = "{\"id\":\"-227\",\"model\":\"La-da-Devyatka\",\"horsepower\":50,\"ownerId\":\"-230\"}";
-        MvcResult mvcResult4 = mvc.perform(MockMvcRequestBuilders.post(uriCar)
+        String inputJson2 = "{\"id\":\"-239\",\"model\":\"\",\"horsepower\":50,\"ownerId\":\"-240\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriCar)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(thirdCar)).andReturn();
-        assertEquals(200, mvcResult4.getResponse().getStatus());
+                .content(inputJson2)).andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        String fourthCar = "{\"id\":\"-226\",\"model\":\"La-da-\",\"horsepower\":50,\"ownerId\":\"-230\"}";
-        MvcResult mvcResult5 = mvc.perform(MockMvcRequestBuilders.post(uriCar)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(fourthCar)).andReturn();
-        assertEquals(200, mvcResult5.getResponse().getStatus());
-
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uriStat)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-
-        Statistics statistics = super.mapFromJson(mvcResult.getResponse().getContentAsString(), Statistics.class);
-
-        assertEquals(200, mvcResult.getResponse().getStatus());
-        assertEquals(statistics, expectedStatistics);
+        mvc.perform(
+                MockMvcRequestBuilders.get(uriStat))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.uniquevendorcount", is(1)))
+                .andExpect(jsonPath("$.personcount", is(1)))
+                .andExpect(jsonPath("$.carcount", is(1)))
+                .andDo(MockMvcResultHandlers.print());
     }
+
+
+    @Test
+    public void getStatisticsIgnoreCase() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get(uriStat)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andExpect(MockMvcResultMatchers.status().isOk());
+
+        mvc.perform(
+                MockMvcRequestBuilders.get(uriStat))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.personcount", is(0)))
+                .andExpect(jsonPath("$.carcount", is(0)))
+                .andExpect(jsonPath("$.uniquevendorcount", is(0)))
+                .andDo(MockMvcResultHandlers.print());
+
+        String inputJsonPerson1 = "{\"id\":\"-270\",\"name\":\"Validperson1\",\"birthdate\":\"01.01.2000\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriPerson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJsonPerson1)).andExpect(MockMvcResultMatchers.status().isOk());
+
+        String inputJson1 = "{\"id\":\"-270\",\"model\":\"BMW-X5\",\"horsepower\":100,\"ownerId\":\"-270\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriCar)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson1)).andExpect(MockMvcResultMatchers.status().isOk());
+
+        String inputJson2 = "{\"id\":\"-269\",\"model\":\"BmW-X3\",\"horsepower\":100,\"ownerId\":\"-270\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriCar)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson2)).andExpect(MockMvcResultMatchers.status().isOk());
+
+        String inputJson3 = "{\"id\":\"-268\",\"model\":\"Lada-Devyatka\",\"horsepower\":50,\"ownerId\":\"-270\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriCar)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson3)).andExpect(MockMvcResultMatchers.status().isOk());
+
+        String inputJson4 = "{\"id\":\"-267\",\"model\":\"La-da-Devyatka\",\"horsepower\":50,\"ownerId\":\"-270\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriCar)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson4)).andExpect(MockMvcResultMatchers.status().isOk());
+
+        String inputJson5 = "{\"id\":\"-266\",\"model\":\"La-da-\",\"horsepower\":50,\"ownerId\":\"-270\"}";
+        mvc.perform(MockMvcRequestBuilders.post(uriCar)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson5)).andExpect(MockMvcResultMatchers.status().isOk());
+
+        mvc.perform(
+                MockMvcRequestBuilders.get(uriStat))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.uniquevendorcount", is(3)))
+                .andExpect(jsonPath("$.personcount", is(1)))
+                .andExpect(jsonPath("$.carcount", is(5)))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
 }
