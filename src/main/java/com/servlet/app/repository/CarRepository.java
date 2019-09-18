@@ -11,8 +11,7 @@ import java.util.List;
 public interface CarRepository extends JpaRepository<Car, Long> {
     List<Car> findByOwnerId(Long owner);
 
-    //L@Query(nativeQuery = true, value = "select count(distinct UPPER(CAST((subquery.regexp_matches[1]) AS varchar))) from (select regexp_matches(c.model, '^(\\w+)([\\\\-])([a-zA-Z0-9\\\\-]+)$', 'g') from Car c) as subquery;")
-    @Query(nativeQuery = true, value = "select count(distinct UPPER(regexp_replace(c.model, '^(\\w+)([\\\\-])([a-zA-Z0-9\\\\-]+)$', '$1')))\n" +
+    @Query(nativeQuery = true, value = "select count(distinct UPPER(regexp_replace(c.model, '^(\\w+)([\\\\-])([a-zA-Z0-9\\\\-]+)$', '\\1')))\n" +
             "from car c;")
     Long countByUniqueName();
 }
